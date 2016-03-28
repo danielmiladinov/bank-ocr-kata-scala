@@ -1,159 +1,17 @@
 package net.miladinov.bankOcr
 
 import org.scalatest.{FlatSpec, ShouldMatchers}
+import org.scalatest.prop.TableDrivenPropertyChecks
 
 import scala.io.Source
 
-class BankOcrReaderTest extends FlatSpec with ShouldMatchers {
-
-  "A BankOcrReader" should "read and parse an input file containing 123456789" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/123456789.txt"))
-    
-    val expectedDigits = formatted {
-      """    _  _     _  _  _  _  _ 
-        |  | _| _||_||_ |_   ||_||_|
-        |  ||_  _|  | _||_|  ||_| _|"""
-    }
-    
-    actualDigits shouldEqual expectedDigits
-  }
+class BankOcrReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks {
   
-  it should "read and parse an input file containing 111111111" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/111111111.txt"))
-
-    val expectedDigits = formatted {
-      """                           
-        |  |  |  |  |  |  |  |  |  |
-        |  |  |  |  |  |  |  |  |  |"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-
-  it should "read and parse an input file containing 222222222" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/222222222.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        | _| _| _| _| _| _| _| _| _|
-        ||_ |_ |_ |_ |_ |_ |_ |_ |_ """
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 333333333" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/333333333.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        | _| _| _| _| _| _| _| _| _|
-        | _| _| _| _| _| _| _| _| _|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-
-  it should "read and parse an input file containing 444444444" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/444444444.txt"))
-
-    val expectedDigits = formatted {
-      """                           
-        ||_||_||_||_||_||_||_||_||_|
-        |  |  |  |  |  |  |  |  |  |"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 555555555" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/555555555.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        ||_ |_ |_ |_ |_ |_ |_ |_ |_ 
-        | _| _| _| _| _| _| _| _| _|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 666666666" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/666666666.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        ||_ |_ |_ |_ |_ |_ |_ |_ |_ 
-        ||_||_||_||_||_||_||_||_||_|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 777777777" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/777777777.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        |  |  |  |  |  |  |  |  |  |
-        |  |  |  |  |  |  |  |  |  |"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 888888888" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/888888888.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        ||_||_||_||_||_||_||_||_||_|
-        ||_||_||_||_||_||_||_||_||_|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 999999999" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/999999999.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        ||_||_||_||_||_||_||_||_||_|
-        | _| _| _| _| _| _| _| _| _|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing 000000000" in {
-    val ocr = new BankOcrReader()
-    val actualDigits = ocr.read(testFile("/000000000.txt"))
-
-    val expectedDigits = formatted {
-      """ _  _  _  _  _  _  _  _  _ 
-        || || || || || || || || || |
-        ||_||_||_||_||_||_||_||_||_|"""
-    }
-
-    actualDigits shouldEqual expectedDigits
-  }
-  
-  it should "read and parse an input file containing many account numbers" in {
+  "BankOcrReader" should "read an input file containing many account numbers" in {
     val ocr = new BankOcrReader()
     val actualDigits = ocr.read(testFile("/multiple-lines.txt"))
-    
-    val expectedDigits = formatted {
+
+    val expectedDigits = formatted(
       """ _  _  _  _  _  _  _  _  _ 
         || || || || || || || || || |
         ||_||_||_||_||_||_||_||_||_|""",
@@ -184,10 +42,78 @@ class BankOcrReaderTest extends FlatSpec with ShouldMatchers {
       """ _  _  _  _  _  _  _  _  _ 
         ||_||_||_||_||_||_||_||_||_|
         | _| _| _| _| _| _| _| _| _|"""
-    }
-    
+    )
+
     actualDigits shouldEqual expectedDigits
   }
+  
+  val filesAndExpectedOutputs = Table(
+    ("input file", "expectedOutput"),
+    ("/123456789.txt",
+      """    _  _     _  _  _  _  _ 
+        |  | _| _||_||_ |_   ||_||_|
+        |  ||_  _|  | _||_|  ||_| _|"""
+    ),
+    ("/000000000.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        || || || || || || || || || |
+        ||_||_||_||_||_||_||_||_||_|"""
+    ),
+    ("/111111111.txt",
+      """                           
+        |  |  |  |  |  |  |  |  |  |
+        |  |  |  |  |  |  |  |  |  |"""
+    ),
+    ("/222222222.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        | _| _| _| _| _| _| _| _| _|
+        ||_ |_ |_ |_ |_ |_ |_ |_ |_ """
+    ),
+    ("/333333333.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        | _| _| _| _| _| _| _| _| _|
+        | _| _| _| _| _| _| _| _| _|"""
+    ),
+    ("/444444444.txt",
+      """                           
+        ||_||_||_||_||_||_||_||_||_|
+        |  |  |  |  |  |  |  |  |  |"""
+    ),
+    ("/555555555.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        ||_ |_ |_ |_ |_ |_ |_ |_ |_ 
+        | _| _| _| _| _| _| _| _| _|"""
+    ),
+    ("/666666666.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        ||_ |_ |_ |_ |_ |_ |_ |_ |_ 
+        ||_||_||_||_||_||_||_||_||_|"""
+    ),
+    ("/777777777.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        |  |  |  |  |  |  |  |  |  |
+        |  |  |  |  |  |  |  |  |  |"""
+    ),
+    ("/888888888.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        ||_||_||_||_||_||_||_||_||_|
+        ||_||_||_||_||_||_||_||_||_|"""
+    ),
+    ("/999999999.txt",
+      """ _  _  _  _  _  _  _  _  _ 
+        ||_||_||_||_||_||_||_||_||_|
+        | _| _| _| _| _| _| _| _| _|"""
+    )
+  )
+  
+  forAll (filesAndExpectedOutputs) { (fileName: String, expectedOutput: String) => {
+    it should s"be able to read the contents of $fileName containing the representation of ${fileName.filter(_.isDigit)}" in {
+      val ocr = new BankOcrReader()
+      val actualDigits = ocr.read(testFile(fileName))
+
+      actualDigits shouldEqual formatted(expectedOutput)
+    }
+  }}
   
   private def testFile (fileName: String) = Source.fromInputStream(
     getClass.getResourceAsStream(fileName)
