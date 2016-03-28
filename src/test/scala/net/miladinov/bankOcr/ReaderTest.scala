@@ -5,10 +5,10 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 import scala.io.Source
 
-class BankOcrReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks {
+class ReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks {
   
-  "BankOcrReader" should "read an input file containing many account numbers" in {
-    val actualDigits = BankOcrReader.read(testFile("/multiple-lines.txt"))
+  "Reader" should "read an input file containing many account numbers" in {
+    val actualDigits = Reader.read(testFile("/multiple-lines.txt"))
 
     val expectedDigits = formatted(
       """ _  _  _  _  _  _  _  _  _ 
@@ -107,7 +107,7 @@ class BankOcrReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPro
   
   forAll (filesAndExpectedOutputs) { (fileName: String, expectedOutput: String) => {
     it should s"be able to convert the contents of $fileName to $expectedOutput" in {
-      val actualDigits = BankOcrReader.read(testFile(fileName))
+      val actualDigits = Reader.read(testFile(fileName))
 
       actualDigits shouldEqual formatted(expectedOutput)
     }
@@ -116,7 +116,7 @@ class BankOcrReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPro
   private def testFile (fileName: String) = Source.fromInputStream(
     getClass.getResourceAsStream(fileName)
   )
-
+  
   private def formatted (lines: String*) = {
     lines.map(_.stripMargin.split("\n").toVector).toVector
   }

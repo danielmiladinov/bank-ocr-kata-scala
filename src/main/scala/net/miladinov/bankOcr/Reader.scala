@@ -2,7 +2,7 @@ package net.miladinov.bankOcr
 
 import scala.io.Source
 
-object BankOcrReader {
+object Reader {
   def read (source: Source): IndexedSeq[IndexedSeq[String]] = 
     source.getLines()
       .toIndexedSeq
