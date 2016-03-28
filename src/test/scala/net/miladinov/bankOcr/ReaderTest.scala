@@ -2,15 +2,14 @@ package net.miladinov.bankOcr
 
 import org.scalatest.{FlatSpec, ShouldMatchers}
 import org.scalatest.prop.TableDrivenPropertyChecks
-
-import scala.io.Source
+import net.miladinov.bankOcr.Utils._
 
 class ReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks {
   
   "Reader" should "read an input file containing many account numbers" in {
     val actualDigits = Reader.read(testFile("/multiple-lines.txt"))
 
-    val expectedDigits = formatted(
+    val expectedDigits = formatGlyphStrings(
       """ _  _  _  _  _  _  _  _  _ 
         || || || || || || || || || |
         ||_||_||_||_||_||_||_||_||_|""",
@@ -109,15 +108,7 @@ class ReaderTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyCh
     it should s"be able to convert the contents of $fileName to $expectedOutput" in {
       val actualDigits = Reader.read(testFile(fileName))
 
-      actualDigits shouldEqual formatted(expectedOutput)
+      actualDigits shouldEqual formatGlyphStrings(expectedOutput)
     }
   }}
-
-  private def testFile (fileName: String) = Source.fromInputStream(
-    getClass.getResourceAsStream(fileName)
-  )
-  
-  private def formatted (lines: String*) = {
-    lines.map(_.stripMargin.split("\n").toVector).toVector
-  }
 }

@@ -2,10 +2,11 @@ package net.miladinov.bankOcr
 
 import org.scalatest.{FlatSpec, ShouldMatchers}
 import org.scalatest.prop.TableDrivenPropertyChecks
+import net.miladinov.bankOcr.Utils._
 
 class ParserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyChecks {
   "Parser" should "parse an account number from its textual representation" in {
-    val representation = formatted {
+    val representation = formatGlyphString {
       """    _  _     _  _  _  _  _ 
         |  | _| _||_||_ |_   ||_||_|
         |  ||_  _|  | _||_|  ||_| _|"""
@@ -70,10 +71,8 @@ class ParserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyCh
   
   forAll (reprModelsAndExpectedResults) { (reprModel: String, expectedResult: String) => {
     it should s"be able to parse the representation of $expectedResult" in {
-      val actualResult = Parser.parse(formatted(reprModel))
+      val actualResult = Parser.parse(formatGlyphString(reprModel))
       actualResult shouldEqual expectedResult
     }
   }}
-  
-  private def formatted (repr: String) = repr.stripMargin.split("\n").toVector
 }
