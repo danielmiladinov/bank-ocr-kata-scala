@@ -45,7 +45,11 @@ object Parser {
   )
   
   def parse (representation: IndexedSeq[String]): String = {
-    val x = representation.map(_.grouped(3).toIndexedSeq)
-    (x(0), x(1), x(2)).zipped.map { case (a, b, c) => toDigit(List(a, b, c).mkString("\n")) }.mkString
+    val glyphsByRow = representation.map(_.grouped(3).toIndexedSeq)
+    val glyphsByCol = (glyphsByRow(0), glyphsByRow(1), glyphsByRow(2)).zipped
+    val digits = glyphsByCol.map {
+      case (top, mid, bot) => toDigit(List(top, mid, bot).mkString("\n"))
+    }
+    digits.mkString
   }
 }
