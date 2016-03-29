@@ -63,14 +63,16 @@ object Generator {
 
   private def randomAccountNumber(): (String, String) = {
     val digits: IndexedSeq[String] = IndexedSeq.fill(9)(rng.nextInt(10).toString)
-    
-    val glyphs = digits.map(toGlyph(_).split("\n"))
-      .foldLeft(IndexedSeq("", "", "", ""))((acc, char) => {
-        val IndexedSeq(top, mid, bot, blank) = acc
-        val Array(a, b, c) = char
-        IndexedSeq(top + a, mid + b, bot + c, blank)
-      })
-    
-    (digits.mkString, glyphs.mkString("\n"))
+    (digits.mkString, mkGlyph(digits))
   }
+
+  def mkGlyph (number: IndexedSeq[String]): String = {
+    number.map(toGlyph(_).split("\n")).foldLeft(IndexedSeq("", "", "", ""))((acc, char) => {
+      val IndexedSeq(top, mid, bot, blank) = acc
+      val Array(a, b, c) = char
+      IndexedSeq(top + a, mid + b, bot + c, blank)
+    }).mkString("\n")
+  }
+
+  def mkGlyph (number: String): String = mkGlyph(number.split(""))
 }
