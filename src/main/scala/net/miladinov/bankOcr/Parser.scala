@@ -44,12 +44,28 @@ object Parser {
       | _|""".stripMargin -> "9"
   )
   
+  private sealed trait ParseState
+  private case object Valid extends ParseState
+  private case object Illegible extends ParseState
+
   def parse (representation: IndexedSeq[String]): String = {
     val glyphsByRow = representation.map(_.grouped(3).toIndexedSeq)
     val glyphsByCol = (glyphsByRow(0), glyphsByRow(1), glyphsByRow(2)).zipped
     val digits = glyphsByCol.map {
-      case (top, mid, bot) => toDigit(List(top, mid, bot).mkString("\n"))
+      case (top, mid, bot) => toDigit.get(List(top, mid, bot).mkString("\n"))
     }
-    digits.mkString
+
+    val parsed = digits.foldLeft(("", Valid): (String, ParseState))((a, d) => {
+      val (ds, ps) = a
+      d match {
+        case Some(x) => (ds + x, ps)
+        case None => (ds + "?", Illegible)
+      }
+    })
+
+    parsed match {
+      case (n, Valid) => n
+      case (n, Illegible) => s"$n ILL"
+    }
   }
 }
