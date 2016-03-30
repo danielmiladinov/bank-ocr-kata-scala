@@ -64,7 +64,7 @@ object Parser {
     })
 
     parsed match {
-      case (n, Valid) => n
+      case (n, Valid) => if (Validator.validate(n)) n else s"$n ERR"
       case (n, Illegible) => s"$n ILL"
     }
   }

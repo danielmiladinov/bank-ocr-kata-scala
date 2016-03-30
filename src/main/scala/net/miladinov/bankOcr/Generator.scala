@@ -62,7 +62,14 @@ object Generator {
   private val toGlyph = toDigit.map(_.swap)
 
   private def randomAccountNumber(): (String, String) = {
-    val digits: IndexedSeq[String] = IndexedSeq.fill(9)(rng.nextInt(10).toString)
+    var valid = false
+    var digits: IndexedSeq[String] = IndexedSeq()
+    
+    while (!valid) {
+      digits = IndexedSeq.fill(9)(rng.nextInt(10).toString)
+      valid = Validator.validate(digits)
+    }
+    
     (digits.mkString, mkGlyph(digits))
   }
 
