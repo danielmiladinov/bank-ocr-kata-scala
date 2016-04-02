@@ -208,10 +208,133 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
        | _ """.stripMargin
     ))
   )
-  
+
   forAll (digitsAndRemovals) { (label: String, glyph: String, expectedRemovals: Set[String]) => {
     it should s"enumerate all the possible single underscore/pipe removals for the glyph $label" in {
       Guesser.removals(glyph) should be (expectedRemovals)
+    }
+  }}
+
+  val digitsAndAdditions = Table(
+    ("label", "digit", "additions"),
+    ("zero",
+      """ _ 
+        || |
+        ||_|""".stripMargin, Set(
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    )),
+    ("one",
+      """   
+        |  |
+        |  |""".stripMargin, Set(
+      """ _ 
+        |  |
+        |  |""".stripMargin,
+      """   
+        || |
+        |  |""".stripMargin,
+      """   
+        | _|
+        |  |""".stripMargin,
+      """   
+        |  |
+        || |""".stripMargin,
+      """   
+        |  |
+        | _|""".stripMargin
+    )),
+    ("two",
+      """ _ 
+        | _|
+        ||_ """.stripMargin, Set(
+      """ _ 
+        ||_|
+        ||_ """.stripMargin,
+      """ _ 
+        | _|
+        ||_|""".stripMargin
+    )),
+    ("three",
+      """ _ 
+        | _|
+        | _|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        | _|""".stripMargin,
+      """ _ 
+        | _|
+        ||_|""".stripMargin
+    )),
+    ("four",
+      """   
+        ||_|
+        |  |""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        |  |""".stripMargin,
+      """   
+        ||_|
+        || |""".stripMargin,
+      """   
+        ||_|
+        | _|""".stripMargin
+    )),
+    ("five",
+      """ _ 
+        ||_ 
+        | _|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        | _|""".stripMargin,
+      """ _ 
+        ||_ 
+        ||_|""".stripMargin
+    )),
+    ("six",
+      """ _ 
+        ||_ 
+        ||_|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    )),
+    ("seven",
+      """ _ 
+        |  |
+        |  |""".stripMargin,  Set(
+      """ _ 
+        || |
+        |  |""".stripMargin,
+      """ _ 
+        | _|
+        |  |""".stripMargin,
+      """ _ 
+        |  |
+        || |""".stripMargin,
+      """ _ 
+        |  |
+        | _|""".stripMargin
+    )),
+    ("eight",
+      """ _ 
+        ||_|
+        ||_|""".stripMargin,  Set[String]()
+    ),
+    ("nine",
+      """ _ 
+        ||_|
+        | _|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    ))
+  )
+
+  forAll (digitsAndAdditions) { (label: String, glyph: String, expectedAdditions: Set[String]) => {
+    it should s"enumerate all the possible single underscore/pipe additions for the glyph $label" in {
+      Guesser.additions(glyph) should be (expectedAdditions)
     }
   }}
 }
