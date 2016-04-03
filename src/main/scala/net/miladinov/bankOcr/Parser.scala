@@ -1,6 +1,5 @@
 package net.miladinov.bankOcr
 
-
 object Parser {
   private val toDigit: Map[String, String] = Map(
     """ _ 
@@ -43,7 +42,7 @@ object Parser {
       ||_|
       | _|""".stripMargin -> "9"
   )
-  
+
   sealed trait ParseState
   case object Valid extends ParseState
   case object Illegible extends ParseState
@@ -58,19 +57,18 @@ object Parser {
   def parse (representation: IndexedSeq[String]): String = {
     val glyphsByRow = representation.map(_.grouped(3).toIndexedSeq)
     val glyphsByCol = (glyphsByRow(0), glyphsByRow(1), glyphsByRow(2)).zipped
-    val digits = glyphsByCol.map {
-      case (top, mid, bot) => parseDigit(IndexedSeq(top, mid, bot))
-    }
+    val digits = glyphsByCol.map { case (top, mid, bot) => parseDigit(IndexedSeq(top, mid, bot)) }
 
-    val parsed = digits.foldLeft(("", Valid): (String, ParseState))((a, d) => {
-      val (parsedString, stringParseState) = a
-      val (parsedDigit, digitParseState) = d
-      (parsedString + parsedDigit, if (stringParseState == Valid) digitParseState else stringParseState)
-    })
-
-    parsed match {
+    convert(digits) match {
       case (n, Valid) => if (Validator.validate(n)) n else s"$n ERR"
       case (n, Illegible) => s"$n ILL"
     }
   }
+
+  def convert (digits: IndexedSeq[(String, ParseState)]): (String, ParseState) =
+    digits.foldLeft(("", Valid): (String, ParseState))((a, d) => {
+      val (parsedString, stringParseState) = a
+      val (parsedDigit, digitParseState) = d
+      (parsedString + parsedDigit, if (stringParseState == Valid) digitParseState else stringParseState)
+    })
 }
