@@ -6,13 +6,13 @@ object Guesser {
 
   def additions (glyph: IndexedSeq[String]): Set[String] = {
     val transforms: List[IndexedSeq[String] => IndexedSeq[String]] = List(
-      addTop,
-      addMidLeft,
-      addMidMid,
-      addMidRight,
-      addBotLeft,
-      addBotMid,
-      addBotRight
+      changeTop("_"),
+      changeMidLeft("|"),
+      changeMidMid("_"),
+      changeMidRight("|"),
+      changeBotLeft("|"),
+      changeBotMid("_"),
+      changeBotRight("|")
     )
 
     transforms
@@ -20,61 +20,19 @@ object Guesser {
       .filterNot { case (a, b) => a == b }
       .map { case (a, b) => b.mkString("\n") }
       .toSet
-  }
-
-  private def addTop (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(l, _, r) = top.split("")
-    IndexedSeq(IndexedSeq(l, "_", r).mkString, mid, bot)
-  }
-
-  private def addMidLeft (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(_, m, r) = mid.split("")
-    IndexedSeq(top, IndexedSeq("|", m, r).mkString, bot)
-  }
-
-  private def addMidMid (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(l, _, r) = mid.split("")
-    IndexedSeq(top, IndexedSeq(l, "_", r).mkString, bot)
-  }
-
-  private def addMidRight (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(l, m, _) = mid.split("")
-    IndexedSeq(top, IndexedSeq(l, m, "|").mkString, bot)
-  }
-
-  private def addBotLeft (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(_, m, r) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq("|", m, r).mkString)
-  }
-
-  private def addBotMid (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(l, _, r) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq(l, "_", r).mkString)
-  }
-
-  private def addBotRight (g: IndexedSeq[String]): IndexedSeq[String] = {
-    val IndexedSeq(top, mid, bot) = g
-    val Array(l, m, _) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq(l, m, "|").mkString)
   }
 
   def removals (g: String): Set[String] = removals(g.split("\n"))
 
   def removals (glyph: IndexedSeq[String]): Set[String] = {
     val transforms: List[IndexedSeq[String] => IndexedSeq[String]] = List(
-      removeTop,
-      removeMidLeft,
-      removeMidMid,
-      removeMidRight,
-      removeBotLeft,
-      removeBotMid,
-      removeBotRight
+      changeTop(" "),
+      changeMidLeft(" "),
+      changeMidMid(" "),
+      changeMidRight(" "),
+      changeBotLeft(" "),
+      changeBotMid(" "),
+      changeBotRight(" ")
     )
 
     transforms
@@ -84,45 +42,45 @@ object Guesser {
       .toSet
   }
 
-  private def removeTop (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeTop (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(l, _, r) = top.split("")
-    IndexedSeq(IndexedSeq(l, " ", r).mkString, mid, bot)
+    IndexedSeq(IndexedSeq(l, c, r).mkString, mid, bot)
   }
 
-  private def removeMidLeft (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeMidLeft (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(_, m, r) = mid.split("")
-    IndexedSeq(top, IndexedSeq(" ", m, r).mkString, bot)
+    IndexedSeq(top, IndexedSeq(c, m, r).mkString, bot)
   }
 
-  private def removeMidMid (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeMidMid (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(l, _, r) = mid.split("")
-    IndexedSeq(top, IndexedSeq(l, " ", r).mkString, bot)
+    IndexedSeq(top, IndexedSeq(l, c, r).mkString, bot)
   }
 
-  private def removeMidRight (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeMidRight (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(l, m, _) = mid.split("")
-    IndexedSeq(top, IndexedSeq(l, m, " ").mkString, bot)
+    IndexedSeq(top, IndexedSeq(l, m, c).mkString, bot)
   }
 
-  private def removeBotLeft (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeBotLeft (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(_, m, r) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq(" ", m, r).mkString)
+    IndexedSeq(top, mid, IndexedSeq(c, m, r).mkString)
   }
 
-  private def removeBotMid (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeBotMid (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(l, _, r) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq(l, " ", r).mkString)
+    IndexedSeq(top, mid, IndexedSeq(l, c, r).mkString)
   }
 
-  private def removeBotRight (g: IndexedSeq[String]): IndexedSeq[String] = {
+  private def changeBotRight (c: String): (IndexedSeq[String]) => IndexedSeq[String] = g => {
     val IndexedSeq(top, mid, bot) = g
     val Array(l, m, _) = bot.split("")
-    IndexedSeq(top, mid, IndexedSeq(l, m, " ").mkString)
+    IndexedSeq(top, mid, IndexedSeq(l, m, c).mkString)
   }
 }
