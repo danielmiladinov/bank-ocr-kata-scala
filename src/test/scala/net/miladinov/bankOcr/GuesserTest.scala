@@ -9,7 +9,7 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
                   ||_|
                   ||_|""".stripMargin  
 
-    Guesser.removals(eight) should be (Set(
+    Guesser.removals(eight).map(_.mkString("\n")) should be (Set(
       """   
         ||_|
         ||_|""".stripMargin,
@@ -211,7 +211,7 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
 
   forAll (digitsAndRemovals) { (label: String, glyph: String, expectedRemovals: Set[String]) => {
     it should s"enumerate all the possible single underscore/pipe removals for the glyph $label" in {
-      Guesser.removals(glyph) should be (expectedRemovals)
+      Guesser.removals(glyph).map(_.mkString("\n")) should be (expectedRemovals)
     }
   }}
 
@@ -334,7 +334,109 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
 
   forAll (digitsAndAdditions) { (label: String, glyph: String, expectedAdditions: Set[String]) => {
     it should s"enumerate all the possible single underscore/pipe additions for the glyph $label" in {
-      Guesser.additions(glyph) should be (expectedAdditions)
+      Guesser.additions(glyph).map(_.mkString("\n")) should be (expectedAdditions)
+    }
+  }}
+  
+  val digitsAndCorrections = Table(
+    ("label", "digit", "corrections"),
+    ("zero",
+      """ _ 
+        || |
+        ||_|""".stripMargin, Set(
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    )),
+    ("one",
+      """   
+        |  |
+        |  |""".stripMargin, Set(
+      """ _ 
+        |  |
+        |  |""".stripMargin
+    )),
+    ("two",
+      """ _ 
+        | _|
+        ||_ """.stripMargin, Set[String]()
+    ),
+    ("three",
+      """ _ 
+        | _|
+        | _|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        | _|""".stripMargin
+    )),
+    ("four",
+      """   
+        ||_|
+        |  |""".stripMargin,  Set[String]()
+    ),
+    ("five",
+      """ _ 
+        ||_ 
+        | _|""".stripMargin,  Set(
+      """ _ 
+        ||_|
+        | _|""".stripMargin,
+      """ _ 
+        ||_ 
+        ||_|""".stripMargin
+    )),
+    ("six",
+      """ _ 
+        ||_ 
+        ||_|""".stripMargin,  Set(
+      """ _ 
+        ||_ 
+        | _|""".stripMargin,
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    )),
+    ("seven",
+      """ _ 
+        |  |
+        |  |""".stripMargin,  Set(
+      """   
+        |  |
+        |  |""".stripMargin
+    )),
+    ("eight",
+      """ _ 
+        ||_|
+        ||_|""".stripMargin,  Set(
+      """ _ 
+        || |
+        ||_|""".stripMargin,
+      """ _ 
+        ||_ 
+        ||_|""".stripMargin,
+      """ _ 
+        ||_|
+        | _|""".stripMargin
+    )),
+    ("nine",
+      """ _ 
+        ||_|
+        | _|""".stripMargin,  Set(
+      """ _ 
+        | _|
+        | _|""".stripMargin,
+      """ _ 
+        ||_ 
+        | _|""".stripMargin,
+      """ _ 
+        ||_|
+        ||_|""".stripMargin
+    ))
+  )
+
+  forAll (digitsAndCorrections) { (label: String, glyph: String, expectedCorrections: Set[String]) => {
+    it should s"enumerate all the possible corrections for the glyph $label" in {
+      Guesser.corrections(glyph).map(_.mkString("\n")) should be (expectedCorrections)
     }
   }}
 }

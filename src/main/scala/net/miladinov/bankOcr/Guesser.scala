@@ -1,10 +1,15 @@
 package net.miladinov.bankOcr
 
 object Guesser {
+  def corrections (g: String): Set[IndexedSeq[String]] = corrections(g.split("\n"))
 
-  def additions (g: String): Set[String] = additions(g.split("\n"))
+  def corrections (glyph: IndexedSeq[String]): Set[IndexedSeq[String]] = {
+    additions(glyph) union removals(glyph) filter(g => Parser.parseDigit(g)._2 == Parser.Valid)
+  }
 
-  def additions (glyph: IndexedSeq[String]): Set[String] = {
+  def additions (g: String): Set[IndexedSeq[String]] = additions(g.split("\n"))
+
+  def additions (glyph: IndexedSeq[String]): Set[IndexedSeq[String]] = {
     performTransformations(List(
       changeTop("_"),
       changeMidLeft("|"),
@@ -16,9 +21,9 @@ object Guesser {
     ), glyph)
   }
 
-  def removals (g: String): Set[String] = removals(g.split("\n"))
+  def removals (g: String): Set[IndexedSeq[String]] = removals(g.split("\n"))
 
-  def removals (glyph: IndexedSeq[String]): Set[String] = {
+  def removals (glyph: IndexedSeq[String]): Set[IndexedSeq[String]] = {
     performTransformations(List(
       changeTop(" "),
       changeMidLeft(" "),
@@ -32,11 +37,11 @@ object Guesser {
 
   type StringTransformer = IndexedSeq[String] => IndexedSeq[String]
 
-  private def performTransformations (transforms: List[StringTransformer], glyph: IndexedSeq[String]): Set[String] = {
+  private def performTransformations (transforms: List[StringTransformer], glyph: IndexedSeq[String]): Set[IndexedSeq[String]] = {
     transforms
       .map(x => (glyph, x(glyph)))
       .filterNot { case (a, b) => a == b }
-      .map { case (a, b) => b.mkString("\n") }
+      .map { case (a, b) => b }
       .toSet
   }
 
