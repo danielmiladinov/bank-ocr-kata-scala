@@ -54,18 +54,18 @@ object Parser {
     }
   }
 
-  def linesToGlyphs (lines: IndexedSeq[String]): IndexedSeq[(String, String, String)] = {
+  def linesToGlyphs (lines: IndexedSeq[String]): IndexedSeq[IndexedSeq[String]] = {
     // Crib off of what Tuple3Zipped does for its map, because I want to return a real Tuple3, 
     // and there's no implicit conversion from Tuple3Zipped[A] => (A, A, A) and I don't feel like writing one
     import scala.collection.mutable
     val glyphsByRow = lines.map(_.grouped(3).toIndexedSeq)
-    val gs = new mutable.ArrayBuffer[(String, String, String)]()
+    val gs = new mutable.ArrayBuffer[IndexedSeq[String]]()
     val IndexedSeq(top, mid, bot) = glyphsByRow
     val m = mid.iterator
     val b = bot.iterator
     for (t <- top) {
       if (m.hasNext && b.hasNext) {
-        gs.append((t, m.next, b.next))
+        gs.append(IndexedSeq(t, m.next, b.next))
       }
     }
     gs.toIndexedSeq
@@ -73,7 +73,7 @@ object Parser {
 
   def parse (representation: IndexedSeq[String]): String = {
     val glyphsByCol = linesToGlyphs(representation)
-    val digits = glyphsByCol.map { case (top, mid, bot) => parseDigit(IndexedSeq(top, mid, bot)) }
+    val digits = glyphsByCol.map(parseDigit)
 
     convert(digits) match {
       case (n, Valid) => if (Validator.validate(n)) n else s"$n ERR"
