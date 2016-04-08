@@ -439,4 +439,54 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
       Guesser.corrections(glyph).map(_.mkString("\n")) should be (expectedCorrections)
     }
   }}
+
+  val correctionPermutations = Table(
+    ("digits", "expectedCorrections"),
+
+    ("0", Set("0", "8")),
+
+    ("8", Set("0", "8", "6", "9")),
+
+    ("34", Set("34", "94")),
+
+    ("01", Set("01", "07", "81", "87")),
+
+    ("949", Set(
+      "343", "543", "843", "943",
+
+      "345", "545", "845", "945",
+
+      "348", "548", "848", "948",
+
+      "349", "549", "849", "949"
+    )),
+
+    ("999", Set(
+      "333", "335", "338", "339", "353", "355", "358", "359",
+      "383", "385", "388", "389", "393", "395", "398", "399",
+
+      "533", "535", "538", "539", "553", "555", "558", "559",
+      "583", "585", "588", "589", "593", "595", "598", "599",
+
+      "833", "835", "838", "839", "853", "855", "858", "859",
+      "883", "885", "888", "889", "893", "895", "898", "899",
+
+      "933", "935", "938", "939", "953", "955", "958", "959",
+      "983", "985", "988", "989", "993", "995", "998", "999"
+    ))
+  )
+
+  forAll (correctionPermutations) { (digits: String, expectedCorrections: Set[String]) => {
+    def toGlyphs (digits: String): IndexedSeq[Guesser.Glyph] =
+      Parser.linesToGlyphs(Generator.mkGlyph(digits).init.split("\n")).map {
+        case (t, b, m) => IndexedSeq(t, b, m)
+      }
+
+    val sequenceGlyphs = toGlyphs(digits)
+    val expectedCorrectionsGlyphs = expectedCorrections.map(toGlyphs)
+
+    it should s"permute all the possible corrections for the string of digits $digits" in {
+      Guesser.permuteCorrections(sequenceGlyphs) should be (expectedCorrectionsGlyphs)
+    }
+  }}
 }

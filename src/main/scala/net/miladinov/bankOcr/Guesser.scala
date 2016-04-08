@@ -4,6 +4,22 @@ object Guesser {
 
   type Glyph = IndexedSeq[String]
 
+  def permuteCorrections (sequenceGlyphs: IndexedSeq[Glyph]): Set[IndexedSeq[Glyph]] = {
+    val candidates = sequenceGlyphs.map(sg => Set[Glyph](sg) union corrections(sg))
+
+    def permute (corrections: IndexedSeq[Set[Glyph]]): Set[IndexedSeq[Glyph]] = {
+      val prefixes = corrections.head.map(IndexedSeq(_))
+      val suffixes = corrections.tail
+
+      if (suffixes.isEmpty)
+        prefixes
+      else
+        prefixes.flatMap(pre => permute(suffixes).map(suf => pre ++ suf))
+    }
+
+    permute(candidates)
+  }
+
   def corrections (g: String): Set[IndexedSeq[String]] = corrections(g.split("\n"))
 
   def corrections (glyph: Glyph): Set[Glyph] = {
