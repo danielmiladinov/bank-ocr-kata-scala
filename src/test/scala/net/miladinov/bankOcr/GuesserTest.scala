@@ -449,30 +449,18 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
 
     ("34", Set("34", "94")),
 
-    ("01", Set("01", "07", "81", "87")),
+    ("01", Set("01", "07", "81")),
 
-    ("949", Set(
-      "343", "543", "843", "943",
-
-      "345", "545", "845", "945",
-
-      "348", "548", "848", "948",
-
-      "349", "549", "849", "949"
-    )),
+    ("949", Set("349", "549", "849", "943", "945", "948", "949")),
 
     ("999", Set(
-      "333", "335", "338", "339", "353", "355", "358", "359",
-      "383", "385", "388", "389", "393", "395", "398", "399",
+      "399", "599", "899",
 
-      "533", "535", "538", "539", "553", "555", "558", "559",
-      "583", "585", "588", "589", "593", "595", "598", "599",
+      "939", "959", "989",
 
-      "833", "835", "838", "839", "853", "855", "858", "859",
-      "883", "885", "888", "889", "893", "895", "898", "899",
+      "993", "995", "998",
 
-      "933", "935", "938", "939", "953", "955", "958", "959",
-      "983", "985", "988", "989", "993", "995", "998", "999"
+      "999"
     ))
   )
 
@@ -483,8 +471,8 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
     val sequenceGlyphs = toGlyphs(digits)
     val expectedCorrectionsGlyphs = expectedCorrections.map(toGlyphs)
 
-    it should s"permute all the possible corrections for the string of digits $digits" in {
-      Guesser.permuteCorrections(sequenceGlyphs) should be (expectedCorrectionsGlyphs)
+    it should s"combine all the possible corrections for the string of digits $digits" in {
+      Guesser.combineCorrections(sequenceGlyphs) should be (expectedCorrectionsGlyphs)
     }
   }}
 }
