@@ -76,9 +76,26 @@ object Parser {
     val digits = glyphsByCol.map(parseDigit)
 
     convert(digits) match {
-      case (n, Valid) => if (Validator.validate(n)) n else s"$n ERR"
-      case (n, Illegible) => s"$n ILL"
+      case (n, Valid) => if (Validator.validate(n)) n else correct(glyphsByCol, n, "ERR")
+      case (n, Illegible) => correct(glyphsByCol, n, "ILL")
     }
+  }
+
+  def correct (glyphs: IndexedSeq[IndexedSeq[String]], digits: String, failureCode: String): String = {
+    val validCorrections = collection.immutable.SortedSet[String]() ++ Guesser.combineCorrections(glyphs)
+      .map(gs => convert(gs.map(parseDigit)))
+      .filter {
+        case (n, Valid) => Validator.validate(n)
+        case _ => false
+      }
+      .map(_._1)
+
+    if (validCorrections.isEmpty)
+      s"$digits $failureCode"
+    else if (validCorrections.size == 1)
+      validCorrections.head
+    else
+      s"$digits AMB ${validCorrections.map(t => s"'$t'").mkString("[", ", ", "]")}"
   }
 
   def convert (digits: IndexedSeq[(String, ParseState)]): (String, ParseState) =
