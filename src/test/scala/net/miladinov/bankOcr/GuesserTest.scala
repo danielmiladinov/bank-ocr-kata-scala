@@ -465,7 +465,7 @@ class GuesserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyC
   )
 
   forAll (correctionPermutations) { (digits: String, expectedCorrections: Set[String]) => {
-    def toGlyphs (digits: String): IndexedSeq[Guesser.Glyph] =
+    def toGlyphs (digits: String): IndexedSeq[Glyph] =
       Parser.linesToGlyphs(Generator.mkGlyph(digits).init.split("\n"))
 
     val sequenceGlyphs = toGlyphs(digits)

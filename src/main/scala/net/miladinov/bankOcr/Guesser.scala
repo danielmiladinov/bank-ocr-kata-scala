@@ -2,8 +2,6 @@ package net.miladinov.bankOcr
 
 object Guesser {
 
-  type Glyph = IndexedSeq[String]
-
   def combineCorrections (glyphs: IndexedSeq[Glyph]): Set[IndexedSeq[Glyph]] = {
     glyphs.map(sg => Set[Glyph](sg) union corrections(sg))
       .zipWithIndex
@@ -13,7 +11,7 @@ object Guesser {
       })
   }
 
-  def corrections (g: String): Set[IndexedSeq[String]] = corrections(g.split("\n"))
+  def corrections (g: String): Set[Glyph] = corrections(g.split("\n"))
 
   def corrections (glyph: Glyph): Set[Glyph] = {
     additions(glyph) union removals(glyph) filter(g => Parser.parseDigit(g)._2 == Parser.Valid)

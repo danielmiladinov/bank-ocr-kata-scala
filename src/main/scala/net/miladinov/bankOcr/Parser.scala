@@ -47,19 +47,19 @@ object Parser {
   case object Valid extends ParseState
   case object Illegible extends ParseState
 
-  def parseDigit (representation: IndexedSeq[String]): (String, ParseState) = {
-    toDigit get representation.mkString("\n") match {
+  def parseDigit (glyph: Glyph): (String, ParseState) = {
+    toDigit get glyph.mkString("\n") match {
       case Some(x) => (x, Valid)
       case None => ("?", Illegible)
     }
   }
 
-  def linesToGlyphs (lines: IndexedSeq[String]): IndexedSeq[IndexedSeq[String]] = {
+  def linesToGlyphs (lines: IndexedSeq[String]): IndexedSeq[Glyph] = {
     // Crib off of what Tuple3Zipped does for its map, because I want to return a real Tuple3, 
     // and there's no implicit conversion from Tuple3Zipped[A] => (A, A, A) and I don't feel like writing one
     import scala.collection.mutable
     val glyphsByRow = lines.map(_.grouped(3).toIndexedSeq)
-    val gs = new mutable.ArrayBuffer[IndexedSeq[String]]()
+    val gs = new mutable.ArrayBuffer[Glyph]()
     val IndexedSeq(top, mid, bot) = glyphsByRow
     val m = mid.iterator
     val b = bot.iterator
@@ -81,7 +81,7 @@ object Parser {
     }
   }
 
-  def correct (glyphs: IndexedSeq[IndexedSeq[String]], digits: String, failureCode: String): String = {
+  def correct (glyphs: IndexedSeq[Glyph], digits: String, failureCode: String): String = {
     val validCorrections = collection.immutable.SortedSet[String]() ++ Guesser.combineCorrections(glyphs)
       .map(gs => convert(gs.map(parseDigit)))
       .filter {
