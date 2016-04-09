@@ -119,11 +119,11 @@ class ParserTest extends FlatSpec with ShouldMatchers with TableDrivenPropertyCh
        |  ||_  _|  | _||_|  ||_| _|""",
       "123456789"
     ),
-    ("An accurate scan of 664371495, which is invalid and cannot be corrected",
+    ("An accurate scan of 664371495, which is invalid and can be corrected to 664371485",
      """ _  _     _  _        _  _ 
        ||_ |_ |_| _|  |  ||_||_||_ 
        ||_||_|  | _|  |  |  | _| _|""",
-      "664371495 ERR"
+      "664371485"
     ),
     ("An accurate scan of 200800000",
      """ _  _  _  _  _  _  _  _  _ 
