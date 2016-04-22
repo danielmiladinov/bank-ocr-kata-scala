@@ -1,48 +1,6 @@
 package net.miladinov.bankOcr
 
 object Parser {
-  private val toDigit: Map[String, String] = Map(
-    """ _ 
-      || |
-      ||_|""".stripMargin -> "0",
-
-    """   
-      |  |
-      |  |""".stripMargin -> "1",
-
-    """ _ 
-      | _|
-      ||_ """.stripMargin -> "2",
-
-    """ _ 
-      | _|
-      | _|""".stripMargin -> "3",
-
-    """   
-      ||_|
-      |  |""".stripMargin -> "4",
-
-    """ _ 
-      ||_ 
-      | _|""".stripMargin -> "5",
-
-    """ _ 
-      ||_ 
-      ||_|""".stripMargin -> "6",
-
-    """ _ 
-      |  |
-      |  |""".stripMargin -> "7",
-
-    """ _ 
-      ||_|
-      ||_|""".stripMargin -> "8",
-
-    """ _ 
-      ||_|
-      | _|""".stripMargin -> "9"
-  )
-
   sealed trait ParseState
   case object Valid extends ParseState
   case object Illegible extends ParseState
